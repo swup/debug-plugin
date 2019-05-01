@@ -162,7 +162,17 @@ var DebugPlugin = function (_Plugin) {
             args[_key] = arguments[_key];
         }
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DebugPlugin.__proto__ || Object.getPrototypeOf(DebugPlugin)).call.apply(_ref, [this].concat(args))), _this), _this.name = "SwupDebugPlugin", _this.log = function (str, object) {
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DebugPlugin.__proto__ || Object.getPrototypeOf(DebugPlugin)).call.apply(_ref, [this].concat(args))), _this), _this.name = "SwupDebugPlugin", _this.triggerEvent = function (eventName, originalEvent) {
+            if (originalEvent) {
+                console.groupCollapsed('%cswup:' + '%c' + eventName, 'color: #343434', 'color: #009ACD');
+                console.log(originalEvent);
+                console.groupEnd();
+            } else {
+                console.log('%cswup:' + '%c' + eventName, 'color: #343434', 'color: #009ACD');
+            }
+
+            _this.swup._triggerEvent(eventName, originalEvent);
+        }, _this.log = function (str, object) {
             if (object) {
                 console.groupCollapsed(str);
                 for (var key in object) {
@@ -172,6 +182,12 @@ var DebugPlugin = function (_Plugin) {
             } else {
                 console.log(str + '%c', 'color: #009ACD');
             }
+        }, _this.debugLog = function (log, type) {
+            if (type === 'error') {
+                console.error('DEBUG PLUGIN: ' + log);
+            } else {
+                console.warn('DEBUG PLUGIN: ' + log);
+            }
         }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
@@ -180,22 +196,35 @@ var DebugPlugin = function (_Plugin) {
         value: function mount() {
             var swup = this.swup;
 
+            // set non-empty log method of swup
             swup.log = this.log;
 
+            // set swup instance as a global variable swup
             window.swup = swup;
 
+            // make events appear in console
             swup._triggerEvent = swup.triggerEvent;
-            swup.triggerEvent = function (eventName, originalEvent) {
-                if (originalEvent) {
-                    console.groupCollapsed('%cswup:' + '%c' + eventName, 'color: #343434', 'color: #009ACD');
-                    console.log(originalEvent);
-                    console.groupEnd();
-                } else {
-                    console.log('%cswup:' + '%c' + eventName, 'color: #343434', 'color: #009ACD');
-                }
+            swup.triggerEvent = this.triggerEvent;
 
-                swup._triggerEvent();
-            };
+            // detect relative links not starting with / or #
+            var potentiallyWrongLinksSelector = 'a[href]:not([href^="' + window.location.origin + '"]):not([href^="/"]):not([href^="http"]):not([href^="/"]):not([href^="?"]):not([href^="#"])';
+
+            swup.on('pageView', function () {
+                if (document.querySelectorAll(potentiallyWrongLinksSelector).length) {
+                    var error = 'It seems there are some links with a href attribute not starting with "#", "/" or current domain, which is potentially a problem.';
+                    console.warn('DEBUG PLUGIN: ' + error, document.querySelectorAll(potentiallyWrongLinksSelector));
+                }
+                if (document.querySelectorAll(potentiallyWrongLinksSelector).length) {
+                    var _error = 'It seems there are some links with a href attribute not starting with "#", "/" or current domain, which is potentially a problem.';
+                    console.warn('DEBUG PLUGIN: ' + _error, document.querySelectorAll(potentiallyWrongLinksSelector));
+                }
+            });
+        }
+    }, {
+        key: 'unmount',
+        value: function unmount() {
+            this.swup.log = function () {};
+            this.swup.triggerEvent = this.swup._triggerEvent;
         }
     }]);
 
