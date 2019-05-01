@@ -10,7 +10,7 @@ Plugin also tries to detect some common mistakes, and outputs a suggestions into
 This plugin can be installed with npm
 
 ```bash
-npm install @swup/ga-plugin
+npm install @swup/debug-plugin
 ```
 
 and included with import
