@@ -1,7 +1,7 @@
 import Plugin from '@swup/plugin';
 
 export default class DebugPlugin extends Plugin {
-    name = "SwupDebugPlugin";
+    name = "DebugPlugin";
 
     mount() {
         const swup = this.swup;
