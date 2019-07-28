@@ -138,17 +138,13 @@ var DebugPlugin = function (_Plugin) {
     _inherits(DebugPlugin, _Plugin);
 
     function DebugPlugin() {
-        var _ref;
-
-        var _temp, _this, _ret;
-
         _classCallCheck(this, DebugPlugin);
 
-        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-            args[_key] = arguments[_key];
-        }
+        var _this = _possibleConstructorReturn(this, (DebugPlugin.__proto__ || Object.getPrototypeOf(DebugPlugin)).call(this));
 
-        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = DebugPlugin.__proto__ || Object.getPrototypeOf(DebugPlugin)).call.apply(_ref, [this].concat(args))), _this), _this.name = "DebugPlugin", _this.triggerEvent = function (eventName, originalEvent) {
+        _this.name = "DebugPlugin";
+
+        _this.triggerEvent = function (eventName, originalEvent) {
             if (originalEvent) {
                 console.groupCollapsed('%cswup:' + '%c' + eventName, 'color: #343434', 'color: #009ACD');
                 console.log(originalEvent);
@@ -158,7 +154,9 @@ var DebugPlugin = function (_Plugin) {
             }
 
             _this.swup._triggerEvent(eventName, originalEvent);
-        }, _this.log = function (str, object) {
+        };
+
+        _this.log = function (str, object) {
             if (object) {
                 console.groupCollapsed(str);
                 for (var key in object) {
@@ -168,13 +166,21 @@ var DebugPlugin = function (_Plugin) {
             } else {
                 console.log(str + '%c', 'color: #009ACD');
             }
-        }, _this.debugLog = function (log, type) {
+        };
+
+        _this.debugLog = function (log, type) {
             if (type === 'error') {
                 console.error('DEBUG PLUGIN: ' + log);
             } else {
                 console.warn('DEBUG PLUGIN: ' + log);
             }
-        }, _temp), _possibleConstructorReturn(_this, _ret);
+        };
+
+        if (!document.getElementsByTagName('title').length) {
+            var error = "This page doesn't have title tag. Title tag is required in every page.";
+            console.warn('DEBUG PLUGIN: ' + error);
+        }
+        return _this;
     }
 
     _createClass(DebugPlugin, [{

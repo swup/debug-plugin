@@ -1,6 +1,6 @@
 {
   "name": "@swup/debug-plugin",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Swup Debug plugin.",
   "main": "lib/index.js",
   "scripts": {

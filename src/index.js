@@ -3,6 +3,15 @@ import Plugin from '@swup/plugin';
 export default class DebugPlugin extends Plugin {
     name = "DebugPlugin";
 
+    constructor() {
+        super();
+
+        if (!document.getElementsByTagName('title').length) {
+            const error = "This page doesn't have title tag. Title tag is required in every page.";
+            console.warn(`DEBUG PLUGIN: ${error}`, );
+        }
+    }
+
     mount() {
         const swup = this.swup;
 
