@@ -7,7 +7,7 @@ export default class DebugPlugin extends Plugin {
         globalInstance: false
     };
 
-    constructor(options) {
+    constructor(options = {}) {
         super();
 
         this.options = {
