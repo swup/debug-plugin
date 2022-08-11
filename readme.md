@@ -1,11 +1,11 @@
 # Swup Debug plugin
 
-Debug plugin adds some useful functionality to the swup for development purposes.
-Mainly, it outputs all the events in a console as they happen, which can be useful for debugging.
+Debug plugin adds some useful functionality to swup for development purposes.
+Mainly, it outputs all the events in the console as they happen, which can be useful for debugging.
 
-Plugin also rewrites swups `log` method, so any output provided by plugins is also visible.
+Debug Plugin rewrites swup's `log` method, so any output provided by plugins is also visible.
 
-Plugin also tries to detect some common mistakes, and outputs a suggestions into a console.
+The plugin also tries to detect some common mistakes, and outputs suggestions in the console.
 
 ## Installation
 
@@ -15,7 +15,7 @@ This plugin can be installed with npm
 npm install @swup/debug-plugin
 ```
 
-and included with import
+and included with an import
 
 ```shell
 import SwupDebugPlugin from '@swup/debug-plugin';
