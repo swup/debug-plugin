@@ -3,8 +3,17 @@ import Plugin from '@swup/plugin';
 export default class DebugPlugin extends Plugin {
     name = "DebugPlugin";
 
-    constructor() {
+    defaultOptions = {
+        globalInstance: false
+    };
+
+    constructor(options = {}) {
         super();
+
+        this.options = {
+            ...this.defaultOptions,
+            ...options
+        };
 
         if (!document.getElementsByTagName('title').length) {
             const error = "This page doesn't have title tag. Title tag is required in every page.";
@@ -19,7 +28,9 @@ export default class DebugPlugin extends Plugin {
         swup.log = this.log;
 
         // set swup instance as a global variable swup
-        window.swup = swup;
+        if (this.options.globalInstance) {
+            window.swup = swup;
+        }
 
         // make events appear in console
         swup._triggerEvent = swup.triggerEvent;
@@ -43,6 +54,9 @@ export default class DebugPlugin extends Plugin {
     unmount() {
         this.swup.log = () => {};
         this.swup.triggerEvent = this.swup._triggerEvent;
+        if (this.options.globalInstance) {
+            window.swup = null;
+        }
     }
 
     triggerEvent = (eventName, originalEvent) => {
