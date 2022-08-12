@@ -6,6 +6,7 @@
   "scripts": {
     "compile": "babel --presets es2015,stage-0 -d lib/ src/",
     "build": "webpack-cli",
+    "lint": "prettier src/**/*.{js,mjs} --write",
     "prepublish": "npm run compile && npm run build"
   },
   "author": {
@@ -32,5 +33,6 @@
   },
   "dependencies": {
     "@swup/plugin": "^1.0.0"
-  }
+  },
+  "prettier": "@swup/prettier-config"
 }
