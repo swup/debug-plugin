@@ -9,22 +9,20 @@ The plugin also tries to detect some common mistakes, and outputs suggestions in
 
 ## Installation
 
-This plugin can be installed with npm
+Install the plugin from npm and import it into your bundle.
 
 ```bash
 npm install @swup/debug-plugin
 ```
 
-and included with an import
-
-```shell
+```js
 import SwupDebugPlugin from '@swup/debug-plugin';
 ```
 
-or included from the dist folder
+Or include the minified production file from a CDN:
 
 ```html
-<script src="./dist/SwupDebugPlugin.js"></script>
+<script src="https://unpkg.com/@swup/debug-plugin@3"></script>
 ```
 
 ## Usage
