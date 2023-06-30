@@ -9,7 +9,6 @@ export default class SwupDebugPlugin extends Plugin {
 
 	constructor(options = {}) {
 		super();
-
 		this.options = { ...this.defaults, ...options };
 	}
 
@@ -17,6 +16,7 @@ export default class SwupDebugPlugin extends Plugin {
 		const swup = this.swup;
 
 		// set non-empty log method of swup
+		this.originalSwupLog = swup.log;
 		swup.log = this.log;
 
 		// set swup instance as a global variable swup
@@ -26,40 +26,46 @@ export default class SwupDebugPlugin extends Plugin {
 
 		// check if title tag is present
 		if (!document.getElementsByTagName('title').length) {
-			const error = "This page doesn't have a title tag. It is required on every page.";
-			console.warn(`DEBUG PLUGIN: ${error}`);
+			this.warn(`This page doesn't have a title tag. It is required on every page.`)
 		}
 
 		// make events appear in console
-		swup._triggerEvent = swup.triggerEvent;
-		swup.triggerEvent = this.triggerEvent;
+		this.originalSwupHookTrigger = swup.hooks.trigger.bind(swup.hooks);
+		this.originalSwupHookTriggerSync = swup.hooks.triggerSync.bind(swup.hooks);
+		swup.hooks.trigger = this.triggerHook;
+		swup.hooks.triggerSync = this.triggerHookSync;
 	}
 
 	unmount() {
-		this.swup.log = () => {};
-		this.swup.triggerEvent = this.swup._triggerEvent;
+		this.swup.log = this.originalSwupLog;
+		this.swup.hooks.trigger = this.originalSwupHookTrigger;
+		this.swup.hooks.triggerSync = this.originalSwupHookTriggerSync;
 		if (this.options.globalInstance) {
 			window.swup = null;
 		}
 	}
 
-	triggerEvent = (eventName, originalEvent) => {
-		if (originalEvent) {
-			console.groupCollapsed(
-				'%cswup:' + '%c' + eventName,
-				'color: #343434',
-				'color: #009ACD'
-			);
-			console.log(originalEvent);
-			console.groupEnd();
-		} else {
-			console.log('%cswup:' + '%c' + eventName, 'color: #343434', 'color: #009ACD');
-		}
+	logHook(hook, data) {
+		console.groupCollapsed(
+			'%cswup:' + '%c' + hook,
+			'color: #343434',
+			'color: #009ACD'
+		);
+		console.log(data);
+		console.groupEnd();
+	}
 
-		this.swup._triggerEvent(eventName, originalEvent);
+	triggerHook = (hook, data, ...args) => {
+		this.logHook(hook, data);
+		return this.originalSwupHookTrigger(hook, data, ...args);
 	};
 
-	log = (str, object) => {
+	triggerHookSync = (hook, data, ...args) => {
+		this.logHook(hook, data);
+		return this.originalSwupHookTriggerSync(hook, data, ...args);
+	};
+
+	log(str, object) {
 		if (object) {
 			console.groupCollapsed(str);
 			for (let key in object) {
@@ -69,13 +75,13 @@ export default class SwupDebugPlugin extends Plugin {
 		} else {
 			console.log(str + '%c', 'color: #009ACD');
 		}
-	};
+	}
 
-	debugLog = (log, type) => {
-		if (type === 'error') {
-			console.error(`DEBUG PLUGIN: ${log}`);
-		} else {
-			console.warn(`DEBUG PLUGIN: ${log}`);
-		}
-	};
+	warn(str) {
+		console.warn(`[swup debug plugin] ${str}`);
+	}
+
+	error(str) {
+		console.error(`[swup debug plugin] ${str}`);
+	}
 }
