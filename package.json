@@ -1,8 +1,8 @@
 {
   "name": "@swup/debug-plugin",
   "amdName": "SwupDebugPlugin",
-  "version": "3.0.0",
   "description": "Swup Debug plugin.",
+  "version": "4.0.0",
   "type": "module",
   "source": "src/index.js",
   "main": "./dist/index.cjs",
