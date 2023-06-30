@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased]
+<!-- ## [Unreleased] -->
+
+## [4.0.0] - 2023-07
 
 - Update for swup 4 compatibility
 
@@ -17,8 +19,9 @@
 
 - Initial release
 
-[Unreleased]: https://github.com/swup/debug-plugin/compare/3.0.0...HEAD
+[Unreleased]: https://github.com/swup/debug-plugin/compare/4.0.0...HEAD
 
+[4.0.0]: https://github.com/swup/debug-plugin/releases/tag/4.0.0
 [3.0.0]: https://github.com/swup/debug-plugin/releases/tag/3.0.0
 [2.0.0]: https://github.com/swup/debug-plugin/releases/tag/2.0.0
 [1.0.0]: https://github.com/swup/debug-plugin/releases/tag/1.0.0
