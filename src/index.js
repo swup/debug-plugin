@@ -33,31 +33,6 @@ export default class SwupDebugPlugin extends Plugin {
 		// make events appear in console
 		swup._triggerEvent = swup.triggerEvent;
 		swup.triggerEvent = this.triggerEvent;
-
-		// detect relative links not starting with / or #
-		const potentiallyWrongLinksSelector =
-			'a[href]:not([href^="' +
-			window.location.origin +
-			'"]):not([href^="/"]):not([href^="http"]):not([href^="/"]):not([href^="?"]):not([href^="#"])';
-
-		swup.on('pageView', () => {
-			if (document.querySelectorAll(potentiallyWrongLinksSelector).length) {
-				const error =
-					'It seems there are some links with a href attribute not starting with "#", "/" or current domain, which is potentially a problem.';
-				console.warn(
-					`DEBUG PLUGIN: ${error}`,
-					document.querySelectorAll(potentiallyWrongLinksSelector)
-				);
-			}
-			if (document.querySelectorAll(potentiallyWrongLinksSelector).length) {
-				const error =
-					'It seems there are some links with a href attribute not starting with "#", "/" or current domain, which is potentially a problem.';
-				console.warn(
-					`DEBUG PLUGIN: ${error}`,
-					document.querySelectorAll(potentiallyWrongLinksSelector)
-				);
-			}
-		});
 	}
 
 	unmount() {
