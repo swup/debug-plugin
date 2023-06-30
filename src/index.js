@@ -3,22 +3,14 @@ import Plugin from '@swup/plugin';
 export default class SwupDebugPlugin extends Plugin {
 	name = 'SwupDebugPlugin';
 
-	defaultOptions = {
+	defaults = {
 		globalInstance: false
 	};
 
 	constructor(options = {}) {
 		super();
 
-		this.options = {
-			...this.defaultOptions,
-			...options
-		};
-
-		if (!document.getElementsByTagName('title').length) {
-			const error = "This page doesn't have title tag. Title tag is required in every page.";
-			console.warn(`DEBUG PLUGIN: ${error}`);
-		}
+		this.options = { ...this.defaults, ...options };
 	}
 
 	mount() {
@@ -30,6 +22,12 @@ export default class SwupDebugPlugin extends Plugin {
 		// set swup instance as a global variable swup
 		if (this.options.globalInstance) {
 			window.swup = swup;
+		}
+
+		// check if title tag is present
+		if (!document.getElementsByTagName('title').length) {
+			const error = "This page doesn't have a title tag. It is required on every page.";
+			console.warn(`DEBUG PLUGIN: ${error}`);
 		}
 
 		// make events appear in console
