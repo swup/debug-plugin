@@ -1,7 +1,7 @@
 import Plugin from '@swup/plugin';
 
-export default class DebugPlugin extends Plugin {
-	name = 'DebugPlugin';
+export default class SwupDebugPlugin extends Plugin {
+	name = 'SwupDebugPlugin';
 
 	defaultOptions = {
 		globalInstance: false
