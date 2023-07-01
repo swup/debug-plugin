@@ -3,6 +3,8 @@ import Plugin from '@swup/plugin';
 export default class SwupDebugPlugin extends Plugin {
 	name = 'SwupDebugPlugin';
 
+	requires = { swup: '>=4' };
+
 	defaults = {
 		globalInstance: false
 	};
