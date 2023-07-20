@@ -31,17 +31,19 @@ export default class SwupDebugPlugin extends Plugin {
 			this.warn(`This page doesn't have a title tag. It is required on every page.`)
 		}
 
-		// make events appear in console
-		this.originalSwupHookTrigger = swup.hooks.trigger.bind(swup.hooks);
-		this.originalSwupHookTriggerSync = swup.hooks.triggerSync.bind(swup.hooks);
-		swup.hooks.trigger = this.triggerHook;
-		swup.hooks.triggerSync = this.triggerHookSync;
+		// make hook calls appear in console
+		this.originalSwupHookCall = swup.hooks.call.bind(swup.hooks);
+		this.originalSwupHookCallSync = swup.hooks.callSync.bind(swup.hooks);
+		swup.hooks.call = this.callHook.bind(this);
+		swup.hooks.callSync = this.callHookSync.bind(this);
 	}
 
 	unmount() {
+		super.unmount();
+
 		this.swup.log = this.originalSwupLog;
-		this.swup.hooks.trigger = this.originalSwupHookTrigger;
-		this.swup.hooks.triggerSync = this.originalSwupHookTriggerSync;
+		this.swup.hooks.call = this.originalSwupHookCall;
+		this.swup.hooks.callSync = this.originalSwupHookCallSync;
 		if (this.options.globalInstance) {
 			window.swup = null;
 		}
@@ -57,15 +59,15 @@ export default class SwupDebugPlugin extends Plugin {
 		console.groupEnd();
 	}
 
-	triggerHook = (hook, data, ...args) => {
+	callHook(hook, data, ...args) {
 		this.logHook(hook, data);
-		return this.originalSwupHookTrigger(hook, data, ...args);
-	};
+		return this.originalSwupHookCall(hook, data, ...args);
+	}
 
-	triggerHookSync = (hook, data, ...args) => {
+	callHookSync(hook, data, ...args) {
 		this.logHook(hook, data);
-		return this.originalSwupHookTriggerSync(hook, data, ...args);
-	};
+		return this.originalSwupHookCallSync(hook, data, ...args);
+	}
 
 	log(str, object) {
 		if (object) {
