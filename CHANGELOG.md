@@ -1,7 +1,5 @@
 # Changelog
 
-<!-- ## [Unreleased] -->
-
 ## [4.0.2] - 2023-09-25
 
 - Use `@swup/cli` for bundling
@@ -26,8 +24,6 @@
 ## [1.0.0] - 2019-05-02
 
 - Initial release
-
-[Unreleased]: https://github.com/swup/debug-plugin/compare/4.0.2...HEAD
 
 [4.0.2]: https://github.com/swup/debug-plugin/releases/tag/4.0.2
 [4.0.1]: https://github.com/swup/debug-plugin/releases/tag/4.0.1
