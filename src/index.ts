@@ -1,13 +1,28 @@
 import Plugin from '@swup/plugin';
+import type { Swup, HookName, HookArguments } from 'swup';
+
+declare global {
+	interface Window {
+		swup?: Swup;
+	}
+}
+
+type Options = {
+	globalInstance: boolean;
+};
 
 export default class SwupDebugPlugin extends Plugin {
 	name = 'SwupDebugPlugin';
 
 	requires = { swup: '>=4' };
 
-	defaults = {
+	defaults: Options = {
 		globalInstance: false
 	};
+	options: Options;
+	originalSwupLog?: Swup['log'];
+	originalSwupHookCall?: Swup['hooks']['call'];
+	originalSwupHookCallSync?: Swup['hooks']['callSync'];
 
 	constructor(options = {}) {
 		super();
@@ -28,7 +43,7 @@ export default class SwupDebugPlugin extends Plugin {
 
 		// check if title tag is present
 		if (!document.getElementsByTagName('title').length) {
-			this.warn(`This page doesn't have a title tag. It is required on every page.`)
+			this.warn(`This page doesn't have a title tag. It is required on every page.`);
 		}
 
 		// make hook calls appear in console
@@ -41,35 +56,31 @@ export default class SwupDebugPlugin extends Plugin {
 	unmount() {
 		super.unmount();
 
-		this.swup.log = this.originalSwupLog;
-		this.swup.hooks.call = this.originalSwupHookCall;
-		this.swup.hooks.callSync = this.originalSwupHookCallSync;
+		this.swup.log = this.originalSwupLog!;
+		this.swup.hooks.call = this.originalSwupHookCall!;
+		this.swup.hooks.callSync = this.originalSwupHookCallSync!;
 		if (this.options.globalInstance) {
-			window.swup = null;
+			window.swup = undefined;
 		}
 	}
 
-	logHook(hook, data) {
-		console.groupCollapsed(
-			'%cswup:' + '%c' + hook,
-			'color: #343434',
-			'color: #009ACD'
-		);
-		console.log(data);
+	logHook<T extends HookName>(hook: T, args: HookArguments<T>) {
+		console.groupCollapsed('%cswup:' + '%c' + hook, 'color: #343434', 'color: #009ACD');
+		console.log(args);
 		console.groupEnd();
 	}
 
-	callHook(hook, data, ...args) {
-		this.logHook(hook, data);
-		return this.originalSwupHookCall(hook, data, ...args);
-	}
+	callHook: Swup['hooks']['call'] = (hook, args, ...rest) => {
+		this.logHook(hook, args);
+		return this.originalSwupHookCall!(hook, args, ...rest);
+	};
 
-	callHookSync(hook, data, ...args) {
-		this.logHook(hook, data);
-		return this.originalSwupHookCallSync(hook, data, ...args);
-	}
+	callHookSync: Swup['hooks']['callSync'] = (hook, args, ...rest) => {
+		this.logHook(hook, args);
+		return this.originalSwupHookCallSync!(hook, args, ...rest);
+	};
 
-	log(str, object) {
+	log(str: string, object: any): void {
 		if (object) {
 			console.groupCollapsed(str);
 			for (let key in object) {
@@ -81,11 +92,11 @@ export default class SwupDebugPlugin extends Plugin {
 		}
 	}
 
-	warn(str) {
+	warn(str: string): void {
 		console.warn(`[swup debug plugin] ${str}`);
 	}
 
-	error(str) {
+	error(str: string): void {
 		console.error(`[swup debug plugin] ${str}`);
 	}
 }
