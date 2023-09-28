@@ -73,12 +73,12 @@ export default class SwupDebugPlugin extends Plugin {
 	callHook: Swup['hooks']['call'] = (hook, args, ...rest) => {
 		this.logHook(hook, args);
 		return this.originalSwupHookCall!(hook, args, ...rest);
-	}
+	};
 
 	callHookSync: Swup['hooks']['callSync'] = (hook, args, ...rest) => {
 		this.logHook(hook, args);
 		return this.originalSwupHookCallSync!(hook, args, ...rest);
-	}
+	};
 
 	log(str: string, object: any): void {
 		if (object) {
