@@ -1,14 +1,21 @@
 {
   "name": "@swup/debug-plugin",
   "amdName": "SwupDebugPlugin",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "A swup plugin for debugging and helping in development",
   "type": "module",
-  "source": "src/index.js",
+  "source": "src/index.ts",
   "main": "./dist/index.cjs",
   "module": "./dist/index.module.js",
-  "exports": "./dist/index.modern.js",
   "unpkg": "./dist/index.umd.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.modern.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "files": [
     "dist"
   ],
