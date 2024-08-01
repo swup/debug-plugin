@@ -30,37 +30,64 @@ export default class SwupDebugPlugin extends Plugin {
 	}
 
 	mount() {
-		const swup = this.swup;
-
 		// set non-empty log method of swup
-		this.originalSwupLog = swup.log;
-		swup.log = this.log;
+		this.setLogImplementation();
 
 		// set swup instance as a global variable swup
-		if (this.options.globalInstance) {
-			window.swup = swup;
-		}
-
-		// check if title tag is present
-		if (!document.getElementsByTagName('title').length) {
-			this.warn(`This page doesn't have a title tag. It is required on every page.`);
-		}
+		this.setGlobalInstance();
 
 		// make hook calls appear in console
-		this.originalSwupHookCall = swup.hooks.call.bind(swup.hooks);
-		this.originalSwupHookCallSync = swup.hooks.callSync.bind(swup.hooks);
-		swup.hooks.call = this.callHook.bind(this);
-		swup.hooks.callSync = this.callHookSync.bind(this);
+		this.proxyHooksThroughConsole();
+
+		// check if title tag is present
+		this.checkDocumentTitle();
+
 	}
 
 	unmount() {
 		super.unmount();
 
+		this.restoreLogImplementation();
+		this.restoreHooksImplementation();
+		this.unsetGlobalInstance();
+	}
+
+	setLogImplementation() {
+		this.originalSwupLog = this.swup.log;
+		this.swup.log = this.log;
+	}
+
+	restoreLogImplementation() {
 		this.swup.log = this.originalSwupLog!;
+	}
+
+	proxyHooksThroughConsole() {
+		this.originalSwupHookCall = this.swup.hooks.call.bind(this.swup.hooks);
+		this.originalSwupHookCallSync = this.swup.hooks.callSync.bind(this.swup.hooks);
+		this.swup.hooks.call = this.callHook.bind(this);
+		this.swup.hooks.callSync = this.callHookSync.bind(this);
+	}
+
+	restoreHooksImplementation() {
 		this.swup.hooks.call = this.originalSwupHookCall!;
 		this.swup.hooks.callSync = this.originalSwupHookCallSync!;
+	}
+
+	setGlobalInstance() {
+		if (this.options.globalInstance) {
+			window.swup = this.swup;
+		}
+	}
+
+	unsetGlobalInstance() {
 		if (this.options.globalInstance) {
 			window.swup = undefined;
+		}
+	}
+
+	checkDocumentTitle() {
+		if (!document.querySelector('title')) {
+			this.warn('Document is missing a title tag. It is required on every page.');
 		}
 	}
 
