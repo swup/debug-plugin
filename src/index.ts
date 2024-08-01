@@ -95,8 +95,12 @@ export default class SwupDebugPlugin extends Plugin {
 
 	checkContainers() {
 		for (const selector of this.swup.options.containers) {
-			if (!document.querySelector(selector)) {
+			const containers = document.querySelectorAll(selector);
+			if (!containers.length) {
 				this.warn(`Container \`${selector}\` is missing on the page.`);
+			}
+			if (containers.length > 1) {
+				this.warn(`Container \`${selector}\` is present multiple times on the page.`);
 			}
 		}
 	}
