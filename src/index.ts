@@ -89,7 +89,7 @@ export default class SwupDebugPlugin extends Plugin {
 
 	checkDocumentTitle() {
 		if (!document.querySelector('title')) {
-			this.warn('Document is missing a title tag. It is required on every page.');
+			this.error('Document is missing a title tag. It is required on every page.');
 		}
 	}
 
@@ -97,10 +97,10 @@ export default class SwupDebugPlugin extends Plugin {
 		for (const selector of this.swup.options.containers) {
 			const containers = document.querySelectorAll(selector);
 			if (!containers.length) {
-				this.warn(`Container \`${selector}\` is missing on the page.`);
+				this.error(`Container \`${selector}\` is missing on the page.`);
 			}
 			if (containers.length > 1) {
-				this.warn(`Container \`${selector}\` is present multiple times on the page.`);
+				this.error(`Container selector \`${selector}\` matches multiple elements.`);
 			}
 		}
 	}
