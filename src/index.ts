@@ -1,4 +1,5 @@
 import Plugin from '@swup/plugin';
+import { query, queryAll } from 'swup';
 import type { Swup, HookName, HookArguments } from 'swup';
 
 declare global {
@@ -91,14 +92,14 @@ export default class SwupDebugPlugin extends Plugin {
 	}
 
 	checkDocumentTitle() {
-		if (!document.querySelector('title')) {
+		if (!query('title')) {
 			this.error('Document is missing a title tag. It is required on every page.');
 		}
 	}
 
 	checkContainers() {
 		for (const selector of this.swup.options.containers) {
-			const containers = Array.from(document.querySelectorAll(selector));
+			const containers = queryAll(selector);
 			if (!containers.length) {
 				this.error(`Container \`${selector}\` is missing on the page.`);
 			}
@@ -117,8 +118,8 @@ export default class SwupDebugPlugin extends Plugin {
 			return;
 		}
 
-		const containers = this.swup.options.containers.map((selector) => document.querySelector(selector));
-		const animatedContainers = containers.filter((container) => container?.matches(animationSelector));
+		const containers = this.swup.options.containers.map((selector) => query(selector));
+		const animatedContainers = containers.filter((el) => el?.matches(animationSelector));
 		if (!animatedContainers.length) {
 			this.warn(`No container matches the animation selector \`${animationSelector}\`.`);
 		}
