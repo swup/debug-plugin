@@ -42,6 +42,8 @@ export default class SwupDebugPlugin extends Plugin {
 		// check if title tag is present
 		this.checkDocumentTitle();
 
+		// check if all containers are present
+		this.checkContainers();
 	}
 
 	unmount() {
@@ -88,6 +90,14 @@ export default class SwupDebugPlugin extends Plugin {
 	checkDocumentTitle() {
 		if (!document.querySelector('title')) {
 			this.warn('Document is missing a title tag. It is required on every page.');
+		}
+	}
+
+	checkContainers() {
+		for (const selector of this.swup.options.containers) {
+			if (!document.querySelector(selector)) {
+				this.warn(`Container \`${selector}\` is missing on the page.`);
+			}
 		}
 	}
 
