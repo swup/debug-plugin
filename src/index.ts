@@ -104,10 +104,10 @@ export default class SwupDebugPlugin extends Plugin {
 				this.error(`Container \`${selector}\` is missing on the page.`);
 			}
 			if (containers.length > 1) {
-				this.error(`Container selector \`${selector}\` matches multiple elements.`);
+				this.error(`Container \`${selector}\` matches multiple elements.`);
 			}
-			if (containers.some((container) => !document.body.contains(container))) {
-				this.error(`Container \`${selector}\` must be a child of the body tag.`);
+			if (containers.some((container) => !container.matches('body *'))) {
+				this.error(`Container \`${selector}\` is not supported. It must be a child of the body tag.`);
 			}
 		}
 	}
