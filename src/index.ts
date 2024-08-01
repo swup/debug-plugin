@@ -44,6 +44,9 @@ export default class SwupDebugPlugin extends Plugin {
 
 		// check if all containers are present
 		this.checkContainers();
+
+		// check if transition classes map to containers
+		this.checkAnimationSelector();
 	}
 
 	unmount() {
@@ -105,6 +108,19 @@ export default class SwupDebugPlugin extends Plugin {
 			if (containers.some((container) => !document.body.contains(container))) {
 				this.error(`Container \`${selector}\` must be a child of the body tag.`);
 			}
+		}
+	}
+
+	checkAnimationSelector() {
+		const { animationSelector } = this.swup.options;
+		if (!animationSelector) {
+			return;
+		}
+
+		const containers = this.swup.options.containers.map((selector) => document.querySelector(selector));
+		const animatedContainers = containers.filter((container) => container?.matches(animationSelector));
+		if (!animatedContainers.length) {
+			this.warn(`No container matches the animation selector \`${animationSelector}\`.`);
 		}
 	}
 
