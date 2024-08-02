@@ -1,4 +1,5 @@
 import Plugin from '@swup/plugin';
+import { query, queryAll } from 'swup';
 import type { Swup, HookName, HookArguments } from 'swup';
 
 declare global {
@@ -30,37 +31,97 @@ export default class SwupDebugPlugin extends Plugin {
 	}
 
 	mount() {
-		const swup = this.swup;
-
 		// set non-empty log method of swup
-		this.originalSwupLog = swup.log;
-		swup.log = this.log;
+		this.setLogImplementation();
 
 		// set swup instance as a global variable swup
-		if (this.options.globalInstance) {
-			window.swup = swup;
-		}
-
-		// check if title tag is present
-		if (!document.getElementsByTagName('title').length) {
-			this.warn(`This page doesn't have a title tag. It is required on every page.`);
-		}
+		this.setGlobalInstance();
 
 		// make hook calls appear in console
-		this.originalSwupHookCall = swup.hooks.call.bind(swup.hooks);
-		this.originalSwupHookCallSync = swup.hooks.callSync.bind(swup.hooks);
-		swup.hooks.call = this.callHook.bind(this);
-		swup.hooks.callSync = this.callHookSync.bind(this);
+		this.proxyHooksThroughConsole();
+
+		// check if title tag is present
+		this.checkDocumentTitle();
+
+		// check if all containers are present
+		this.checkContainers();
+
+		// check if transition classes map to containers
+		this.checkAnimationSelector();
 	}
 
 	unmount() {
 		super.unmount();
 
+		this.restoreLogImplementation();
+		this.restoreHooksImplementation();
+		this.unsetGlobalInstance();
+	}
+
+	setLogImplementation() {
+		this.originalSwupLog = this.swup.log;
+		this.swup.log = this.log;
+	}
+
+	restoreLogImplementation() {
 		this.swup.log = this.originalSwupLog!;
+	}
+
+	proxyHooksThroughConsole() {
+		this.originalSwupHookCall = this.swup.hooks.call.bind(this.swup.hooks);
+		this.originalSwupHookCallSync = this.swup.hooks.callSync.bind(this.swup.hooks);
+		this.swup.hooks.call = this.callHook.bind(this);
+		this.swup.hooks.callSync = this.callHookSync.bind(this);
+	}
+
+	restoreHooksImplementation() {
 		this.swup.hooks.call = this.originalSwupHookCall!;
 		this.swup.hooks.callSync = this.originalSwupHookCallSync!;
+	}
+
+	setGlobalInstance() {
+		if (this.options.globalInstance) {
+			window.swup = this.swup;
+		}
+	}
+
+	unsetGlobalInstance() {
 		if (this.options.globalInstance) {
 			window.swup = undefined;
+		}
+	}
+
+	checkDocumentTitle() {
+		if (!query('title')) {
+			this.error('Document is missing a title tag. It is required on every page.');
+		}
+	}
+
+	checkContainers() {
+		for (const selector of this.swup.options.containers) {
+			const containers = queryAll(selector);
+			if (!containers.length) {
+				this.error(`Container \`${selector}\` is missing on the page.`);
+			}
+			if (containers.length > 1) {
+				this.error(`Container \`${selector}\` matches multiple elements.`);
+			}
+			if (containers.some((container) => !container.matches('body *'))) {
+				this.error(`Container \`${selector}\` is not supported. It must be a child of the body tag.`);
+			}
+		}
+	}
+
+	checkAnimationSelector() {
+		const { animationSelector } = this.swup.options;
+		if (!animationSelector) {
+			return;
+		}
+
+		const containers = this.swup.options.containers.map((selector) => query(selector));
+		const animatedContainers = containers.filter((el) => el?.matches(animationSelector));
+		if (!animatedContainers.length) {
+			this.warn(`No container matches the animation selector \`${animationSelector}\`.`);
 		}
 	}
 

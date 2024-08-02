@@ -2,9 +2,9 @@
 
 A [swup](https://swup.js.org) plugin for debugging and helping in development.
 
-- Output all triggered hooks to the console as they happen
-- Rewrites swup's `log` method so that any output provided by plugins is visible
 - Detect common mistakes and suggest solutions in the console
+- Output all triggered hooks to the console as they happen
+- Configure swup's `log` method to make its output visible
 
 ## Installation
 
