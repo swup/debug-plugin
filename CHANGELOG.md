@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.1.0] - 2024-08-02
+
+- Check proper container and selector use
+
 ## [4.0.4] - 2023-09-28
 
 - Fix package exports
@@ -7,6 +11,7 @@
 ## [4.0.3] - 2023-09-28
 
 - Port to TypeScript
+
 ## [4.0.2] - 2023-09-25
 
 - Use `@swup/cli` for bundling
@@ -32,6 +37,7 @@
 
 - Initial release
 
+[4.1.0]: https://github.com/swup/debug-plugin/releases/tag/4.1.0
 [4.0.4]: https://github.com/swup/debug-plugin/releases/tag/4.0.4
 [4.0.3]: https://github.com/swup/debug-plugin/releases/tag/4.0.3
 [4.0.2]: https://github.com/swup/debug-plugin/releases/tag/4.0.2

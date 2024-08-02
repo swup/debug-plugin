@@ -1,7 +1,7 @@
 {
   "name": "@swup/debug-plugin",
   "amdName": "SwupDebugPlugin",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "A swup plugin for debugging and helping in development",
   "type": "module",
   "source": "src/index.ts",
